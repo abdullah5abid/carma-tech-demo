@@ -77,7 +77,7 @@ export class DailyFoodNotificationLambdaPipeline extends Stack {
                   LambdaSource: CodePipelineSource.gitHub('abdullah5abid/misc_cdk', 'master', {
                       authentication: githubToken,
                   }),
-                  InfraSource: CodePipelineSource.connection('Carma-tech/Carma-tech-infra', 'cdk-codepipeline', {
+                  InfraSource: CodePipelineSource.connection('abdullah5abid/carma-tech-demo', 'main', {
                       connectionArn: CARMATECH_CONFIG.Prod.ARN,
                   }),
               },
