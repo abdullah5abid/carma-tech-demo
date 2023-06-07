@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { DailyFoodNotificationLambdaPipeline,PipelineStack } from '@lib/pipeline-stack';
-// import { DailyFoodNotificationLambdaPipeline } from '@lib/lambda-pipeline-stack';
+import { PipelineStack } from '@lib/pipeline-stack';
+import { DailyFoodNotificationLambdaPipeline } from '@lib/lambda-pipeline-stack';
 import { CARMATECH_CONFIG } from '@lib/configuration';
 
 const app = new cdk.App();
