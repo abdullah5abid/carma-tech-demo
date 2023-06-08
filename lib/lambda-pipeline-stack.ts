@@ -34,9 +34,9 @@ export class DailyFoodNotificationLambdaPipeline extends Stack {
                             python: 3.9
                         },
                         commands: [
-                            'cd MISC/',
+                            'ls -la', 
                             'pip install -r requirements.txt -t .',
-                            'cd ..', // go back to project root
+                            // 'cd ..', // go back to project root
                             'npm install -g aws-cdk', // install CDK
                         ]
                     },
@@ -66,6 +66,7 @@ export class DailyFoodNotificationLambdaPipeline extends Stack {
                 privileged: true,
             },
         });
+
 
         // Build Action
         const buildAction = new CodeBuildAction({
