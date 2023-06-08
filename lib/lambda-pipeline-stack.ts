@@ -63,6 +63,7 @@ export class DailyFoodNotificationLambdaPipeline extends Stack {
             }),
             environment: {
                 buildImage: LinuxBuildImage.STANDARD_5_0,
+                privileged: true,
             },
         });
 
