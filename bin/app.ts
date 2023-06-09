@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { PipelineStack } from '@lib/pipeline-stack';
-import { DailyFoodNotificationLambdaPipeline } from '@lib/lambda-pipeline-stack';
+import { CdkCodepipelineLambdaStack } from '@lib/lambda-pipeline-stack';
 import { CARMATECH_CONFIG } from '@lib/configuration';
 
 const app = new cdk.App();
@@ -15,7 +15,7 @@ new PipelineStack(app, 'CarmaTechPipelineStack', {
 
 });
 
-new DailyFoodNotificationLambdaPipeline(app, 'DailyFoodNotificationLambdaPipeline', {
+new CdkCodepipelineLambdaStack(app, 'CdkCodepipelineLambdaStack', {
   env: {
     account: account,
     region: region,
