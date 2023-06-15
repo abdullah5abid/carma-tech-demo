@@ -29,8 +29,8 @@ export class PipelineStack extends Stack {
             // (NOTE: tonytan4ever, turn this off to skip selfMutating) selfMutation: false,
             synth: new ShellStep('Synth', {
                 input: CodePipelineSource.connection(
-                    'Carma-tech/Carma-tech-infra',
-                    'main',
+                    'abdullah5abid/misc_cdk',
+                    'master',
                     {
                         connectionArn: CARMATECH_CONFIG.Prod.ARN,
                     }
@@ -52,40 +52,4 @@ export class PipelineStack extends Stack {
         // });
         // pipeline.addStage(prodCarmaTech);
     }
-}
-
-export class DailyFoodNotificationLambdaPipeline extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, {
-      ...props,
-      env: {
-          account: CARMATECH_CONFIG.Prod.ACCOUNT_ID,
-          region: CARMATECH_CONFIG.Prod.REGION,
-      },
-  });
-
-      const githubToken = SecretValue.secretsManager('github-token'); 
-
-      const pipeline = new CodePipeline(this, 'CarmaTechDailyFoodNotificationLambdaPipeline', {
-          synth: new ShellStep('Synth', {
-              commands: [
-                  'npm install',
-                  'npm run build',
-                  'npx cdk synth',
-              ],
-              additionalInputs: {
-                  LambdaSource: CodePipelineSource.gitHub('abdullah5abid/misc_cdk', 'master', {
-                      authentication: githubToken,
-                  }),
-                  InfraSource: CodePipelineSource.connection('abdullah5abid/carma-tech-demo', 'main', {
-                      connectionArn: CARMATECH_CONFIG.Prod.ARN,
-                  }),
-              },
-          }),
-      });
-
-      pipeline.addStage(new CarmaTechPipelineStage(this, 'Prod', {
-          env: { account: CARMATECH_CONFIG.Prod.ACCOUNT_ID, region: CARMATECH_CONFIG.Prod.REGION }
-      }));
-  }
 }
