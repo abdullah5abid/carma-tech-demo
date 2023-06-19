@@ -24,14 +24,14 @@ export class DailyFoodNotificationLambdaPipeline extends Stack {
       //Creating s3 Bucket
       const artifactsBucket = new Bucket(this, "S3BucketForPipelineArtifacts");
 
-    //   //Create IAM Role for Lambda Function
-    //   const lambdaRole = new Role(this, "lambdaRole", {
-    //     assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-    //     managedPolicies: [
-    //         ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
-    //         ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess')
-    //     ]
-    // });
+      //Create IAM Role for Lambda Function
+      const lambdaRole = new Role(this, "lambdaRole", {
+        assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+        managedPolicies: [
+            ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
+            ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess')
+        ]
+    });
 
       //Codepipeline
       const codepipeline = new Pipeline(this, 'CodePipelineForLambdaDeployment', {});
@@ -102,27 +102,27 @@ export class DailyFoodNotificationLambdaPipeline extends Stack {
       }
       );
 
-    //   //Create lambda function
-    //   const dailyMenuLambda = new Function(this, "dailyLunchMenu", {
-    //     functionName: "DailyMenuNotificationLambda",
-    //     runtime: Runtime.PYTHON_3_9,
-    //     code: Code.fromBucket(artifactsBucket, "MISC/lambda_function.zip"),
-    //     handler: 'lambda_function.lambda_handler',
-    //     timeout: Duration.seconds(200),
-    //     role: lambdaRole,
-    //   });
+      //Create lambda function
+      const dailyMenuLambda = new Function(this, "dailyLunchMenu", {
+        functionName: "DailyMenuNotificationLambda",
+        runtime: Runtime.PYTHON_3_9,
+        code: Code.fromBucket(artifactsBucket, "00ca435d50a8208c4ceee6dc3e1d8403"),
+        handler: 'lambda_function.lambda_handler',
+        timeout: Duration.seconds(200),
+        role: lambdaRole,
+      });
 
-    //   //Create API Gateway
-    //   const api = new RestApi(this, "ApiGateway");
+      //Create API Gateway
+      const api = new RestApi(this, "ApiGateway");
 
-    //   //Create API Gateway resource and method
-    //   const lambdaIntegration = new LambdaIntegration(dailyMenuLambda);
-    //   api.root.addResource('dailylunchmenu').addMethod('GET', lambdaIntegration);
+      //Create API Gateway resource and method
+      const lambdaIntegration = new LambdaIntegration(dailyMenuLambda);
+      api.root.addResource('dailylunchmenu').addMethod('GET', lambdaIntegration);
 
-    //   // Output the API Gateway endpoint URL
-    //   new CfnOutput(this, 'ApiGatewayEndpoint', {
-    //     value: api.url ?? 'Something went wrong',
-    //   })
+      // Output the API Gateway endpoint URL
+      new CfnOutput(this, 'ApiGatewayEndpoint', {
+        value: api.url ?? 'Something went wrong',
+      });
 
       //Permission for CloudFormation to access Lambda and other resources
       createReplaceChangeSetAction.deploymentRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSLambdaExecute'));
