@@ -16,6 +16,7 @@ const region = CARMATECH_CONFIG.Prod.REGION;
 
 new PipelineStack(app, 'CarmaTechPipelineStack', {
   env: { account: account, region: region },
+  description: 'This stack creates a new RDS MySQL database in private subnet',
 });
 
 
