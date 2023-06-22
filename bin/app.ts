@@ -7,6 +7,7 @@ import { Code } from 'aws-cdk-lib/aws-lambda';
 import { CarmaTechInfraStack } from '@lib/carma-tech-infra-stack';
 import { DailySchoolFoodNotificationAppStack } from '@lib/daily-school-food-notification-app-stack';
 import { DailySchoolFoodNotificationCodePipelineStack } from '@lib/daily-school-food-notification-codepipeline-stack';
+import { CarmaTechAPIStack } from '@lib/carmatech-api-stack';
 
 const app = new cdk.App();
 
@@ -34,5 +35,9 @@ new DailySchoolFoodNotificationCodePipelineStack(app, 'DailySchoolFoodNotificati
   env: { account: account, region: region },
 });
 
+new CarmaTechAPIStack(app, 'CarmaTechAPIStack', {
+  lambdaCode: cfnParametersCode,
+  env: { account: account, region: region },
+});
 
 app.synth();

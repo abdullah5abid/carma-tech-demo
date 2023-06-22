@@ -25,7 +25,7 @@ export class DailySchoolFoodNotificationCodePipelineStack extends Stack {
     const cdkSourceAction = new CodeStarConnectionsSourceAction({
       actionName: 'Get_Cdk_Source',
       owner: 'abdullah5abid',
-      repo: 'Carma-tech-demo',
+      repo: 'carma-tech-demo',
       connectionArn: 'arn:aws:codestar-connections:us-east-2:395929101814:connection/e50edeaf-fa53-40c7-983c-f96d86414901',
       output: cdkSourceOutput,
       branch: 'apigatewaay',
