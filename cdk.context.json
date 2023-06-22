@@ -2,5 +2,10 @@
   "acknowledged-issue-numbers": [
     25356,
     25714
+  ],
+  "availability-zones:account=395929101814:region=us-east-2": [
+    "us-east-2a",
+    "us-east-2b",
+    "us-east-2c"
   ]
 }
