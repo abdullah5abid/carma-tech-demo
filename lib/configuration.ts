@@ -2,6 +2,7 @@ export const CARMATECH_CONFIG = {
     Prod: {
         SECRET_ARN: 'arn:aws:secretsmanager:ap-northeast-1:395929101814:secret:github-token-SsHTpI',
         ARN: 'arn:aws:codestar-connections:us-east-2:395929101814:connection/e50edeaf-fa53-40c7-983c-f96d86414901',
+        // ARN: 'arn:aws:codestar-connections:eu-north-1:395929101814:connection/487e7a54-9015-4306-90d3-e586367b9412',
         ACCOUNT_ID: '395929101814',
         REGION: 'us-east-2',
     }
