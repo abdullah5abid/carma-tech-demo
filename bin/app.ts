@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import { PipelineStack } from '@lib/pipeline-stack';
 import { CARMATECH_CONFIG } from '@lib/configuration';
 import { DailySchoolFoodNotificationAppDemoStack } from '@lib/daily-food-notification-app-stack';
+import { CarmaTechInfraStack } from '@lib/carma-tech-infra-stack';
 
 const app = new cdk.App();
 
@@ -30,6 +31,14 @@ new PipelineStack(app, 'CarmaTechPipelineStack', {
 const dailySchoolFoodNotificationAppStack = new DailySchoolFoodNotificationAppDemoStack(
   app, 'DailySchoolFoodNotificationAppDemoStack',{
   env: { account: account, region: region },
+});
+
+const CcrmaTechInfraStack = new CarmaTechInfraStack(
+  app, 'CarmaTechInfraStack', {
+  env: {
+    account: account,
+    region: region,
+  }
 });
 
 app.synth();
