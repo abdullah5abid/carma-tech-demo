@@ -185,7 +185,7 @@ export class CarmaApiDemoStack extends Stack {
             'echo `ls -lrt`',
             'echo Build started on `date`',
             'echo Building the Docker image...',
-            'docker build -t $REPOSITORY_URI:$IMAGE_TAG -f .',
+            'docker build -t $REPOSITORY_URI:$IMAGE_TAG -f Dockerfile .',
             'echo REPOSITORY_URI=$REPOSITORY_URI',
             'echo IMAGE_TAG=$IMAGE_TAG',
             // 'docker tag $REPOSITORY_URI:$IMAGE_TAG'

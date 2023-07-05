@@ -250,7 +250,7 @@ export class CarmaTechInfraStack extends Stack {
             // 'docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG',
             'echo Build started on `date`',
             'echo Building the Docker image...',
-            'docker build -t $REPOSITORY_URI:latest -f .',
+            'docker build -t $REPOSITORY_URI:latest -f Dockerfile .',
             'docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG',
             'echo Build completed on `date`',
           ]
