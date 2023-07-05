@@ -11,7 +11,7 @@ import { DockerImageCode, DockerImageFunction, IFunction, Function, Code, Runtim
 import { Credentials, DatabaseInstance, DatabaseInstanceEngine, MysqlEngineVersion } from 'aws-cdk-lib/aws-rds';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as sns_subs from 'aws-cdk-lib/aws-sns-subscriptions';
-import { DockerImageName, ECRDeployment } from 'cdk-ecr-deployment';
+// import { DockerImageName, ECRDeployment } from 'cdk-ecr-deployment';
 import { Construct } from 'constructs';
 import { join } from 'path';
 import { CARMATECH_CONFIG } from './configuration';
@@ -30,7 +30,7 @@ export class CarmaTechInfraStack extends Stack {
   public readonly lambdaCode: CfnParametersCode;
   private ecrRepository: Repository;
   private dockerImageAsset: DockerImageAsset;
-  private ecrDeployment: ECRDeployment;
+  // private ecrDeployment: ECRDeployment;
   private codeBuildProject: PipelineProject;
   private dockerImageAssetPath: string = join(__dirname, './dockerimage');
 
@@ -84,7 +84,7 @@ export class CarmaTechInfraStack extends Stack {
       repo: "carma-tech-demo",
       connectionArn: CARMATECH_CONFIG.Prod.ARN,
       output: cdkSourceOutput,
-      branch: 'master',
+      branch: 'cdk-pipeline',
     });
 
     // App source
