@@ -196,10 +196,10 @@ export class CarmaTechInfraStack extends Stack {
     return {
       version: '0.2',
       phases: {
-        install: {
-          'runtime-versions': { docker: '19' },
-          commands: []
-        },
+        // install: {
+        //   'runtime-versions': { docker: '19' },
+        //   commands: []
+        // },
         pre_build: {
           commands: [
             // '$(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)',
