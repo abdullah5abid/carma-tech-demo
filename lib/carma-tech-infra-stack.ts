@@ -77,13 +77,13 @@ export class CarmaTechInfraStack extends Stack {
       description: `CarmaApiDemo lambda function generated on: ${currentDate}`
     });
 
-    const func = new Function(this, 'Lambda', {
-      code: this.lambdaCode || Code.fromCfnParameters(),
-      handler: 'src/module/user/user.controller.getUsersCount',
-      runtime: Runtime.NODEJS_18_X,
-      description: `CarmaTech API lambda function generated on: ${currentDate}`,
-    });
-    this.function = func;
+    // const func = new Function(this, 'Lambda', {
+    //   code: this.lambdaCode || Code.fromCfnParameters(),
+    //   handler: 'src/module/user/user.controller.getUsersCount',
+    //   runtime: Runtime.NODEJS_18_X,
+    //   description: `CarmaTech API lambda function generated on: ${currentDate}`,
+    // });
+    // this.function = func;
 
     // Create a new RestApi
     const api = new RestApi(this, 'CarmaTechInfraDemoApi', {
