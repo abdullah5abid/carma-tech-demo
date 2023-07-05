@@ -43,6 +43,7 @@ export class CarmaApiDemoStack extends Stack {
     // creates the lambda function
     this.function = new DockerImageFunction(this, 'CarmaApiDemoLambda', {
       code: DockerImageCode.fromImageAsset(this.dockerImageAssetPath),
+      // code: DockerImageCode.fromEcr(this.ecrRepository),
       description: `CarmaApiDemo lambda function generated on: ${currentDate}`
     });
 
@@ -61,7 +62,13 @@ export class CarmaApiDemoStack extends Stack {
     });
 
     // Add an API Gateway resource and method
-    api.root.addMethod('GET', getIntegration);
+    const proxyResource = api.root.addResource('{proxy+}');
+    proxyResource.addMethod('ANY', getIntegration);
+
+    // Output the API Gateway URL
+    new CfnOutput(this, 'ApiUrl', {
+      value: api.url ?? 'Something went wrong with the API Gateway',
+    });
 
 
     // deployment group
@@ -178,8 +185,10 @@ export class CarmaApiDemoStack extends Stack {
             'echo `ls -lrt`',
             'echo Build started on `date`',
             'echo Building the Docker image...',
-            'docker build -t $REPOSITORY_URI:$IMAGE_TAG -f src/Dockerfile .',
-            'docker tag $REPOSITORY_URI:$IMAGE_TAG'
+            'docker build -t $REPOSITORY_URI:$IMAGE_TAG -f .',
+            'echo REPOSITORY_URI=$REPOSITORY_URI',
+            'echo IMAGE_TAG=$IMAGE_TAG',
+            // 'docker tag $REPOSITORY_URI:$IMAGE_TAG'
           ]
         },
         post_build: {
@@ -188,8 +197,8 @@ export class CarmaApiDemoStack extends Stack {
             'echo Build completed on `date`',
             'echo Pushing the Docker image...',
             'docker push $REPOSITORY_URI:$IMAGE_TAG',
-            // 'aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $REPOSITORY_URI:$IMAGE_TAG',
-            'aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $REPOSITORY_URI:$IMAGE_TAG --code { "imageUri": "$REPOSITORY_URI:$IMAGE_TAG" }'
+            'aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $REPOSITORY_URI:$IMAGE_TAG',
+            // 'aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $REPOSITORY_URI:$IMAGE_TAG --code { "imageUri": "$REPOSITORY_URI:$IMAGE_TAG" }'
           ]
         }
       }

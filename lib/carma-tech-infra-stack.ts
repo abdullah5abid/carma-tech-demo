@@ -61,7 +61,7 @@ export class CarmaTechInfraStack extends Stack {
     // Add a Lambda subscription to the topic
     // snsTopic.grantPublish(this.function);
 
-    // const currentDate = new Date().toISOString();
+    const currentDate = new Date().toISOString();
 
     this.ecrRepository = new Repository(this, 'EcrRepository', {
       repositoryName: 'carmatech-infra-ecr-repo',
@@ -71,6 +71,41 @@ export class CarmaTechInfraStack extends Stack {
       }]
     });
 
+    // creates the lambda function
+    this.function = new DockerImageFunction(this, 'CarmaApiDemoLambda', {
+      code: DockerImageCode.fromImageAsset(this.dockerImageAssetPath),
+      description: `CarmaApiDemo lambda function generated on: ${currentDate}`
+    });
+
+    const func = new Function(this, 'Lambda', {
+      code: this.lambdaCode || Code.fromCfnParameters(),
+      handler: 'src/module/user/user.controller.getUsersCount',
+      runtime: Runtime.NODEJS_18_X,
+      description: `CarmaTech API lambda function generated on: ${currentDate}`,
+    });
+    this.function = func;
+
+    // Create a new RestApi
+    const api = new RestApi(this, 'CarmaTechInfraDemoApi', {
+      restApiName: 'Carma Api Demo Service',
+      description: 'This service serves carma tech infra api demo.',
+    });
+
+    // Create a new LambdaIntegration
+    const getIntegration = new LambdaIntegration(this.function, {
+      requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+    });
+
+    // Add an API Gateway resource and method
+    const proxyResource = api.root.addResource('{proxy+}');
+    proxyResource.addMethod('ANY', getIntegration);
+
+    // Output the API Gateway URL
+    new CfnOutput(this, 'ApiUrl', {
+      value: api.url ?? 'Something went wrong with the API Gateway',
+    });
+
+    // Create a Pipeline
     const carmaTechInfraCodepipeline = new Pipeline(this, 'Pipeline', {
       pipelineName: 'carmaTechInfraProdCodepipeline',
     });
@@ -196,10 +231,6 @@ export class CarmaTechInfraStack extends Stack {
     return {
       version: '0.2',
       phases: {
-        // install: {
-        //   'runtime-versions': { docker: '19' },
-        //   commands: []
-        // },
         pre_build: {
           commands: [
             // '$(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)',
@@ -219,7 +250,7 @@ export class CarmaTechInfraStack extends Stack {
             // 'docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG',
             'echo Build started on `date`',
             'echo Building the Docker image...',
-            'docker build -t $REPOSITORY_URI:latest -f src/Dockerfile .',
+            'docker build -t $REPOSITORY_URI:latest -f .',
             'docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG',
             'echo Build completed on `date`',
           ]
@@ -236,7 +267,6 @@ export class CarmaTechInfraStack extends Stack {
         },
       },
       artifacts: {
-        'base-directory': 'src',
         files: [
           '**/*'
         ],
