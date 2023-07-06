@@ -1,13 +1,13 @@
 import { CloudFormationCreateUpdateStackAction } from 'aws-cdk-lib/aws-codepipeline-actions';
-import { CfnOutput, SecretValue, Stack, StackProps } from 'aws-cdk-lib';
-import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { CfnOutput, Duration, SecretValue, Stack, StackProps } from 'aws-cdk-lib';
+import { Cors, LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { BuildSpec, LinuxBuildImage, PipelineProject } from 'aws-cdk-lib/aws-codebuild';
 import { Artifact, Pipeline } from 'aws-cdk-lib/aws-codepipeline';
 import { CodeBuildAction, CodeStarConnectionsSourceAction, GitHubSourceAction, GitHubTrigger } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { InstanceClass, InstanceSize, InstanceType, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { ManagedPolicy } from 'aws-cdk-lib/aws-iam';
-import { DockerImageCode, DockerImageFunction, IFunction, Function, Code, Runtime, CfnParametersCode } from 'aws-cdk-lib/aws-lambda';
+import { DockerImageCode, DockerImageFunction, IFunction, Function, Code, Runtime, CfnParametersCode, LayerVersion } from 'aws-cdk-lib/aws-lambda';
 import { Credentials, DatabaseInstance, DatabaseInstanceEngine, MysqlEngineVersion } from 'aws-cdk-lib/aws-rds';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as sns_subs from 'aws-cdk-lib/aws-sns-subscriptions';
@@ -77,28 +77,52 @@ export class CarmaTechInfraStack extends Stack {
       description: `CarmaApiDemo lambda function generated on: ${currentDate}`
     });
 
+    // const lambdaLayer = new LayerVersion(this, `NestApplambdaLayer`, {
+    //   code: Code.fromAsset("src/node_modules"),
+    //   compatibleRuntimes: [
+    //     Runtime.NODEJS_18_X,
+    //   ],
+    // });
+
     // const func = new Function(this, 'Lambda', {
-    //   code: this.lambdaCode || Code.fromCfnParameters(),
-    //   handler: 'src/module/user/user.controller.getUsersCount',
+    //   code: Code.fromAsset('src/dist'),
+    //   handler: 'lambda.handler',
     //   runtime: Runtime.NODEJS_18_X,
+    //   layers: [lambdaLayer],
     //   description: `CarmaTech API lambda function generated on: ${currentDate}`,
+    //   environment: {
+    //     NODE_PATH: "$NODE_PATH:/opt",
+    //     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
+    //   },
+    //   timeout: Duration.seconds(100),
     // });
     // this.function = func;
 
-    // Create a new RestApi
+    // // Create a new RestApi
     const api = new RestApi(this, 'CarmaTechInfraDemoApi', {
       restApiName: 'Carma Api Demo Service',
       description: 'This service serves carma tech infra api demo.',
+      defaultCorsPreflightOptions: {
+        allowOrigins: Cors.ALL_ORIGINS,
+        allowMethods: Cors.ALL_METHODS,
+        allowHeaders: Cors.DEFAULT_HEADERS,
+        statusCode: 200,
+      },
     });
+
+    // api.root.addProxy({
+    //   defaultIntegration: new LambdaIntegration(func),
+    //   anyMethod: true
+    // });
 
     // Create a new LambdaIntegration
-    const getIntegration = new LambdaIntegration(this.function, {
-      requestTemplates: { "application/json": '{ "statusCode": "200" }' },
-    });
+    // const getIntegration = new LambdaIntegration(this.function, {
+    //   requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+    // });
 
     // Add an API Gateway resource and method
-    const proxyResource = api.root.addResource('{proxy+}');
-    proxyResource.addMethod('ANY', getIntegration);
+    // const proxyResource = api.root.addResource('{proxy+}');
+    // proxyResource.addMethod('ANY', getIntegration);
 
     // Output the API Gateway URL
     new CfnOutput(this, 'ApiUrl', {

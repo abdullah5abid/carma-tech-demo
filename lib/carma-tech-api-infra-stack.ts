@@ -42,8 +42,8 @@ export class CarmaApiDemoStack extends Stack {
 
     // creates the lambda function
     this.function = new DockerImageFunction(this, 'CarmaApiDemoLambda', {
-      code: DockerImageCode.fromImageAsset(this.dockerImageAssetPath),
-      // code: DockerImageCode.fromEcr(this.ecrRepository),
+      // code: DockerImageCode.fromImageAsset(this.dockerImageAssetPath),
+      code: DockerImageCode.fromEcr(this.ecrRepository, { tag: 'db494a3' }),
       description: `CarmaApiDemo lambda function generated on: ${currentDate}`
     });
 
