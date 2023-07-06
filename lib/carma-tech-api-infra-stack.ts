@@ -1,4 +1,4 @@
-import { CfnOutput, SecretValue, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Duration, SecretValue, Stack, StackProps } from "aws-cdk-lib";
 import { Alias, DockerImageCode, DockerImageFunction, IFunction } from 'aws-cdk-lib/aws-lambda';
 import { join } from "path";
 import { LambdaDeploymentConfig, LambdaDeploymentGroup } from "aws-cdk-lib/aws-codedeploy";
@@ -44,7 +44,8 @@ export class CarmaApiDemoStack extends Stack {
     this.function = new DockerImageFunction(this, 'CarmaApiDemoLambda', {
       // code: DockerImageCode.fromImageAsset(this.dockerImageAssetPath),
       code: DockerImageCode.fromEcr(this.ecrRepository, { tag: 'db494a3' }),
-      description: `CarmaApiDemo lambda function generated on: ${currentDate}`
+      description: `CarmaApiDemo lambda function generated on: ${currentDate}`,
+      timeout: Duration.seconds(300),
     });
 
     // create this lambda's CICD codepipeline

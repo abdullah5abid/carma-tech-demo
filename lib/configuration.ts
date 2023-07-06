@@ -20,11 +20,11 @@ export const CARMATECH_CONFIG = {
 
 //     // App source
 //     const appSourceArtifact = new Artifact();
-//     const appSourceAction = new CodeStarConnectionsSourceAction({
-//       actionName: 'Get_App_Source',
-//       owner: 'Carma-tech',
-//       repo: 'CarmaTech-API',
-//       connectionArn: 'arn:aws:codestar-connections:us-east-2:100209637061:connection/56444933-fb51-4811-b192-7dcefdf0beb2',
-//       output: appSourceArtifact,
-//       branch: 'main',
-//     });
+    // const appSourceAction = new CodeStarConnectionsSourceAction({
+    //   actionName: 'Get_App_Source',
+    //   owner: 'Carma-tech',
+    //   repo: 'CarmaTech-API',
+    //   connectionArn: 'arn:aws:codestar-connections:us-east-2:100209637061:connection/56444933-fb51-4811-b192-7dcefdf0beb2',
+    //   output: appSourceArtifact,
+    //   branch: 'main',
+    // });
