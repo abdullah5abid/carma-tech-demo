@@ -67,33 +67,6 @@ export class DailySchoolFoodNotificationAppDemoStack extends Stack {
       description: 'This service serves daily school food notifications.',
     });
 
-    // Create a model for our request parameters
-    const requestModel = new Model(this, 'requestModel', {
-      restApi: api,
-      contentType: "application/json",
-      modelName: "RequestParamsModel",
-      schema: {
-        schema: JsonSchemaVersion.DRAFT7,
-        title: "requestParams",
-        type: JsonSchemaType.OBJECT,
-        properties: {
-          date: {
-            type: JsonSchemaType.STRING,
-            pattern: '^(?:19|20)\\d\\d/(?:(?:0[1-9]|1[0-2])/(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])/(?:29|30)|(?:0[13578]|1[02])-31)$',
-          },
-          url: {
-            type: JsonSchemaType.STRING,
-            enum: [
-              "https://lindberghschools.nutrislice.com/menu/kennerly-elementary",
-              "https://lindberghschools.nutrislice.com/menu/sperreng-middle",
-              "https://lindberghschools.nutrislice.com/menu/lindbergh-high"
-            ],
-          },
-        },
-        required: ["date", "url"]
-      }
-    });
-
     // Create a new LambdaIntegration
     const getIntegration = new LambdaIntegration(this.function, {
       requestTemplates: { "application/json": '{ "statusCode": "200" }' },
@@ -101,26 +74,16 @@ export class DailySchoolFoodNotificationAppDemoStack extends Stack {
 
     // Add an API Gateway resource and method
     api.root.addMethod('GET', getIntegration, {
-      requestModels: {
-        "application/json": requestModel
+      requestParameters: {
+        'method.request.querystring.date': false,
+        'method.request.querystring.url': false,
       },
-      methodResponses: [
-        {
-          statusCode: '200',
-          responseModels: {
-            "application/json": new Model(this, "ResponseModel", {
-              restApi: api,
-              modelName: "ResponseModel",
-              contentType: "application/json",
-              schema: {
-                schema: JsonSchemaVersion.DRAFT7,
-                type: JsonSchemaType.OBJECT,
-              }
-            }),
-          },
-        },
-      ],
     });
+
+    // Output API Url
+    new CfnOutput(this, 'ApiUrl', {
+      value: api.url ?? "Something went wrong"
+    })
 
 
     // deployment group
@@ -237,7 +200,7 @@ export class DailySchoolFoodNotificationAppDemoStack extends Stack {
             'echo `ls -lrt`',
             'echo Build started on `date`',
             'echo Building the Docker image...',
-            'docker build -t $REPOSITORY_URI:$IMAGE_TAG ./ambda_daily_school_food_notification'
+            'docker build -t $REPOSITORY_URI:$IMAGE_TAG ./lambda_daily_school_food_notification'
           ]
         },
         post_build: {
